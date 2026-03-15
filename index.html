@@ -399,6 +399,75 @@ h1 {
 }
 .movie-card.watched .summary { color: var(--muted); opacity: 0.5; }
 
+/* ── POSTER ── */
+.poster-wrap {
+  width: 52px;
+  height: 78px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  overflow: hidden;
+  background: #0d0d18;
+  border: 1px solid rgba(255,255,255,0.07);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.poster-wrap::after {
+  content: '🎬';
+  font-size: 16px;
+  opacity: 0.2;
+  position: absolute;
+  pointer-events: none;
+}
+.poster-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  position: relative;
+  z-index: 1;
+}
+.poster-img.loaded { opacity: 1; }
+.movie-card.watched .poster-wrap { filter: grayscale(60%); opacity: 0.6; }
+
+/* ── TRAILER LINK ── */
+.trailer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--red);
+  text-decoration: none;
+  border: 1px solid rgba(230,57,70,0.3);
+  padding: 3px 8px;
+  border-radius: 2px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.trailer-link:hover {
+  background: rgba(230,57,70,0.15);
+  border-color: rgba(230,57,70,0.5);
+  color: #ff7070;
+}
+.movie-card.watched .trailer-link {
+  color: var(--muted);
+  border-color: rgba(255,255,255,0.07);
+}
+.movie-card.watched .trailer-link:hover {
+  background: rgba(255,255,255,0.04);
+  color: var(--muted-light);
+}
+
+@media (max-width: 480px) {
+  .poster-wrap { display: none; }
+}
+
 /* ── FOOTER ── */
 .footer {
   max-width: 720px;
@@ -499,6 +568,220 @@ h1 {
   50%      { box-shadow: 0 0 20px 4px rgba(245,197,24,0.1); }
 }
 
+/* ── NOTES DIVIDER ── */
+.notes-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.05);
+  margin: 10px 0 8px;
+}
+
+/* ── NOTES TEXTAREA ── */
+.notes-input {
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 3px;
+  color: var(--cream);
+  font-family: 'Courier New', monospace;
+  font-size: 0.68rem;
+  padding: 6px 10px;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  line-height: 1.55;
+  overflow: hidden;
+  min-height: 28px;
+  display: block;
+}
+.notes-input::placeholder { color: var(--muted); font-style: italic; }
+.notes-input:focus {
+  border-color: rgba(245,197,24,0.3);
+  background: rgba(255,255,255,0.055);
+}
+.movie-card.watched .notes-input { opacity: 0.45; }
+
+/* ── DELETE BUTTON ── */
+.delete-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  padding: 2px 5px;
+  border-radius: 2px;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+  margin-top: 2px;
+  line-height: 1;
+}
+.delete-btn:hover { color: var(--red); background: rgba(230,57,70,0.1); }
+
+/* ── ADD SECTION ── */
+.add-section {
+  max-width: 720px;
+  margin: 10px auto 0;
+  padding: 0 24px;
+}
+
+.add-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px dashed rgba(245,197,24,0.2);
+  border-radius: 5px;
+  padding: 12px 16px;
+  background: rgba(245,197,24,0.02);
+  transition: border-color 0.2s, background 0.2s;
+}
+.add-card:focus-within {
+  border-color: rgba(245,197,24,0.4);
+  background: rgba(245,197,24,0.04);
+}
+
+.add-icon {
+  font-size: 1.2rem;
+  color: rgba(245,197,24,0.4);
+  flex-shrink: 0;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  transition: color 0.2s;
+  line-height: 1;
+}
+.add-card:focus-within .add-icon { color: var(--gold); }
+
+.add-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--cream);
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  min-width: 0;
+}
+.add-input::placeholder { color: var(--muted); font-style: italic; }
+
+.add-btn {
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  border: 1px solid rgba(245,197,24,0.3);
+  background: transparent;
+  color: rgba(245,197,24,0.6);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.18s;
+  flex-shrink: 0;
+}
+.add-btn:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--dark);
+}
+
+/* ── SEARCH DROPDOWN ── */
+.add-section { position: relative; }
+
+.search-dropdown {
+  position: absolute;
+  left: 24px; right: 24px;
+  top: calc(100% - 2px);
+  background: #131318;
+  border: 1px solid rgba(245,197,24,0.3);
+  border-top: 1px solid rgba(245,197,24,0.08);
+  border-radius: 0 0 6px 6px;
+  z-index: 500;
+  overflow: hidden;
+  display: none;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+}
+.search-dropdown.open { display: block; }
+
+.search-result {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background 0.12s;
+}
+.search-result:last-child { border-bottom: none; }
+.search-result:hover { background: rgba(245,197,24,0.06); }
+
+.sr-thumb {
+  width: 36px; height: 54px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  overflow: hidden;
+  background: #0d0d18;
+  border: 1px solid rgba(255,255,255,0.07);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--muted);
+}
+.sr-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.sr-info { flex: 1; min-width: 0; }
+.sr-title {
+  font-family: 'Georgia', serif;
+  font-size: 0.83rem;
+  color: var(--cream);
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sr-snippet {
+  font-family: 'Courier New', monospace;
+  font-size: 0.59rem;
+  color: var(--muted-light);
+  margin-top: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.45;
+}
+
+.sr-add-btn {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1px solid rgba(245,197,24,0.35);
+  background: transparent;
+  color: var(--gold);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  line-height: 1; padding: 0;
+}
+.sr-add-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--dark); }
+
+.search-status {
+  padding: 14px;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+.search-dots { display: inline-flex; gap: 5px; }
+.search-dots span {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--gold);
+  animation: dotpulse 1s ease-in-out infinite;
+}
+.search-dots span:nth-child(2) { animation-delay: 0.15s; }
+.search-dots span:nth-child(3) { animation-delay: 0.30s; }
+@keyframes dotpulse {
+  0%,100% { opacity: 0.2; transform: scale(0.7); }
+  50%      { opacity: 1;   transform: scale(1.2); }
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 480px) {
   h1 { font-size: 3rem; }
@@ -544,6 +827,21 @@ h1 {
 
 <!-- MOVIE LIST -->
 <ul class="movie-list" id="list"></ul>
+<ul class="movie-list" id="custom-list"></ul>
+
+<!-- ADD MOVIE -->
+<div class="add-section">
+  <div class="add-card">
+    <span class="add-icon">🔍</span>
+    <input class="add-input" id="add-input" type="text"
+      placeholder="Search or add a movie to the queue..."
+      oninput="handleSearchInput(this.value)"
+      onkeydown="handleAddKey(event)"
+      autocomplete="off">
+    <button class="add-btn" onclick="addCustomFilm()">Add</button>
+  </div>
+  <div class="search-dropdown" id="search-dropdown"></div>
+</div>
 
 <!-- FOOTER -->
 <div class="footer">
@@ -556,71 +854,184 @@ h1 {
 <script>
 // ── DATA ──────────────────────────────────────────────────────────────────
 const FILMS = [
-  { t:"Along Came a Spider",                    e:"🕷️", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
-    s:"Morgan Freeman's detective Alex Cross hunts a kidnapper who snatches a senator's daughter — then starts playing mind games." },
-  { t:"Good Luck Have Fun Don't Die",           e:"🎮", tags:[["Action","t-action"],["Comedy","t-comedy"]],
-    s:"A darkly comedic thriller set in the cutthroat world of competitive online gaming where the stakes turn very real." },
-  { t:"Are You There God? It's Me, Margaret.", e:"💛", tags:[["Drama","t-drama"],["Comedy","t-comedy"]],
-    s:"Eleven-year-old Margaret navigates puberty, religion, and fitting in after moving from New York City to the New Jersey suburbs." },
-  { t:"Rental Family",                          e:"🎭", tags:[["Documentary","t-doc"]],
-    s:"A Japanese documentary following a for-hire service that provides actors to play family members, friends, and partners for lonely clients." },
-  { t:"Ready or Not",                           e:"😈", tags:[["Horror","t-horror"],["Thriller","t-thriller"]],
-    s:"A bride's wedding night turns deadly when her new in-laws reveal a murderous family tradition she must survive until dawn." },
-  { t:"Scream (2022)",                          e:"🔪", tags:[["Horror","t-horror"],["Slasher","t-horror"]],
-    s:"Twenty-five years after the original Woodsboro killings, a new Ghostface returns — forcing Sidney, Gale, and Dewey back into the nightmare." },
-  { t:"Scream VI (2023)",                       e:"🔪", tags:[["Horror","t-horror"],["Slasher","t-horror"]],
-    s:"The survivors escape to New York City, but Ghostface follows — and in a city of millions, there's nowhere to hide." },
-  { t:"Scream VII (2025)",                      e:"🔪", tags:[["Horror","t-horror"],["Slasher","t-horror"]],
-    s:"Sidney Prescott makes her long-awaited return as a new wave of murders threatens to unravel the truth behind the Ghostface legacy." },
-  { t:"Boyz n the Hood (1991)",                 e:"🏙️", tags:[["Drama","t-drama"],["Crime","t-crime"]],
-    s:"Three friends grow up in South Central Los Angeles navigating gang violence and broken dreams, as one tries desperately to find a way out." },
-  { t:"Menace II Society (1993)",               e:"🌆", tags:[["Drama","t-drama"],["Crime","t-crime"]],
-    s:"A young man in the Watts projects tries to escape the cycle of street violence, but the streets refuse to let him go." },
-  { t:"Juice (1992)",                           e:"⚡", tags:[["Drama","t-drama"],["Crime","t-crime"]],
-    s:"Four Harlem teenagers chase respect and power, but when one gets his hands on a gun, everything spirals out of control." },
-  { t:"New Jack City (1991)",                   e:"💊", tags:[["Crime","t-crime"],["Action","t-action"]],
-    s:"A ruthless drug lord builds a crack cocaine empire in 1980s Harlem, and a maverick undercover cop will do anything to bring him down." },
-  { t:"Friday (1995)",                          e:"😂", tags:[["Comedy","t-comedy"],["Drama","t-drama"]],
-    s:"A lazy Friday in South Central turns chaotic when Craig owes money to the neighborhood dealer and has until sundown to pay up." },
-  { t:"Poetic Justice (1993)",                  e:"✉️", tags:[["Drama","t-drama"],["Biopic","t-biopic"]],
-    s:"A grieving young poet (Janet Jackson) road-trips through California with a mailman she can barely stand — and slowly falls for him." },
-  { t:"Set It Off (1996)",                      e:"💰", tags:[["Action","t-action"],["Crime","t-crime"]],
-    s:"Four friends pushed to their absolute breaking point turn to bank robbery as their only way out, with devastating consequences." },
-  { t:"Paid in Full (2002)",                    e:"💎", tags:[["Crime","t-crime"],["Drama","t-drama"]],
-    s:"Based on true events: three Harlem men get swept into the crack trade of the late '80s and quickly learn the brutal price of fast money." },
-  { t:"Baby Boy (2001)",                        e:"👶", tags:[["Drama","t-drama"]],
-    s:"A 20-year-old man-child refuses to grow up, juggling two baby mamas in South Central while the streets and his past close in around him." },
-  { t:"ATL (2006)",                             e:"🛼", tags:[["Drama","t-drama"],["Comedy","t-comedy"]],
-    s:"Four Atlanta teens spend their last free summer at the local roller rink before life, love, and hard choices force them to grow up." },
-  { t:"Teenage Mutant Ninja Turtles (1990s)",   e:"🐢", tags:[["Action","t-action"],["Comedy","t-comedy"]],
-    s:"Four pizza-obsessed mutant turtles trained in ninjutsu defend New York City from the shadowy Foot Clan and their master, Shredder." },
-  { t:"Louis Theroux: Inside the Manosphere",   e:"📺", tags:[["Documentary","t-doc"]],
-    s:"Louis Theroux embeds himself with male influencers and their followers to understand the fast-growing online world of misogyny and masculinity." },
-  { t:"Memento",                                e:"🧩", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
-    s:"A man with no short-term memory uses tattoos and Polaroids to hunt his wife's killer — told entirely in reverse chronological order." },
-  { t:"What's Love Got to Do with It",          e:"🎵", tags:[["Biopic","t-biopic"],["Drama","t-drama"]],
-    s:"The unflinching true story of Tina Turner's rise to superstardom and her years of abuse at the hands of Ike Turner." },
-  { t:"Kiss the Girls",                         e:"🕵️", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
-    s:"A forensic psychologist races to track a serial kidnapper after his niece disappears — aided only by the one woman who managed to escape." },
-  { t:"High Crimes",                            e:"⚖️", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
-    s:"A successful lawyer discovers her husband has been secretly living under a fake identity accused of ordering a brutal wartime massacre." },
-  { t:"Murder By Numbers",                      e:"🔍", tags:[["Crime","t-crime"],["Thriller","t-thriller"]],
-    s:"Two privileged high school students engineer what they believe is the perfect murder — but a haunted detective refuses to let it slide." },
-  { t:"Taking Lives",                           e:"🪪", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
-    s:"An FBI profiler is called to Montreal to help catch a serial killer with a chilling method: he doesn't just kill his victims — he becomes them." },
-  { t:"Double Jeopardy",                        e:"⚖️", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
-    s:"Convicted of killing her husband, a woman discovers he faked his own death. Since she's already been tried, she can't be charged twice." },
-  { t:"The Bone Collector",                     e:"🦴", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
-    s:"A quadriplegic forensic detective guides a rookie cop through crime scenes as a serial killer leaves elaborate clues only he can decode." },
-  { t:"Copycat",                                e:"🪞", tags:[["Crime","t-crime"],["Thriller","t-thriller"]],
-    s:"An agoraphobic criminal psychologist and a detective hunt a killer who meticulously mimics the signature methods of history's most infamous serial murderers." },
-  { t:"Primal Fear",                            e:"😨", tags:[["Crime","t-crime"],["Thriller","t-thriller"]],
-    s:"A flashy defense attorney takes the case of a meek altar boy accused of murdering an archbishop — and nothing is remotely what it seems." },
+  { t:"Along Came a Spider",
+    e:"🕷️", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"Morgan Freeman's detective Alex Cross hunts a kidnapper who snatches a senator's daughter — then starts playing mind games.",
+    wiki:"Along_Came_a_Spider_(film)",
+    yt:"Along Came a Spider 2001 official trailer" },
+  { t:"Good Luck Have Fun Don't Die",
+    e:"🎮", tags:[["Action","t-action"],["Comedy","t-comedy"]],
+    s:"A darkly comedic thriller set in the cutthroat world of competitive online gaming where the stakes turn very real.",
+    wiki:"Good_Luck,_Have_Fun,_Don't_Die",
+    yt:"Good Luck Have Fun Don't Die 2025 official trailer" },
+  { t:"Are You There God? It's Me, Margaret.",
+    e:"💛", tags:[["Drama","t-drama"],["Comedy","t-comedy"]],
+    s:"Eleven-year-old Margaret navigates puberty, religion, and fitting in after moving from New York City to the New Jersey suburbs.",
+    wiki:"Are_You_There_God%3F_It%27s_Me%2C_Margaret._(film)",
+    yt:"Are You There God It's Me Margaret 2023 official trailer" },
+  { t:"Rental Family",
+    e:"🎭", tags:[["Documentary","t-doc"]],
+    s:"A Japanese documentary following a for-hire service that provides actors to play family members, friends, and partners for lonely clients.",
+    wiki:"Rental_Family",
+    yt:"Rental Family documentary trailer" },
+  { t:"Ready or Not",
+    e:"😈", tags:[["Horror","t-horror"],["Thriller","t-thriller"]],
+    s:"A bride's wedding night turns deadly when her new in-laws reveal a murderous family tradition she must survive until dawn.",
+    wiki:"Ready_or_Not_(film)",
+    yt:"Ready or Not 2019 official trailer" },
+  { t:"Scream (2022)",
+    e:"🔪", tags:[["Horror","t-horror"],["Slasher","t-horror"]],
+    s:"Twenty-five years after the original Woodsboro killings, a new Ghostface returns — forcing Sidney, Gale, and Dewey back into the nightmare.",
+    wiki:"Scream_(2022_film)",
+    yt:"Scream 2022 official trailer" },
+  { t:"Scream VI (2023)",
+    e:"🔪", tags:[["Horror","t-horror"],["Slasher","t-horror"]],
+    s:"The survivors escape to New York City, but Ghostface follows — and in a city of millions, there's nowhere to hide.",
+    wiki:"Scream_VI",
+    yt:"Scream VI 2023 official trailer" },
+  { t:"Scream VII (2025)",
+    e:"🔪", tags:[["Horror","t-horror"],["Slasher","t-horror"]],
+    s:"Sidney Prescott makes her long-awaited return as a new wave of murders threatens to unravel the truth behind the Ghostface legacy.",
+    wiki:"Scream_VII",
+    yt:"Scream VII 2025 official trailer" },
+  { t:"Boyz n the Hood (1991)",
+    e:"🏙️", tags:[["Drama","t-drama"],["Crime","t-crime"]],
+    s:"Three friends grow up in South Central Los Angeles navigating gang violence and broken dreams, as one tries desperately to find a way out.",
+    wiki:"Boyz_n_the_Hood",
+    yt:"Boyz n the Hood 1991 official trailer" },
+  { t:"Menace II Society (1993)",
+    e:"🌆", tags:[["Drama","t-drama"],["Crime","t-crime"]],
+    s:"A young man in the Watts projects tries to escape the cycle of street violence, but the streets refuse to let him go.",
+    wiki:"Menace_II_Society",
+    yt:"Menace II Society 1993 official trailer" },
+  { t:"Juice (1992)",
+    e:"⚡", tags:[["Drama","t-drama"],["Crime","t-crime"]],
+    s:"Four Harlem teenagers chase respect and power, but when one gets his hands on a gun, everything spirals out of control.",
+    wiki:"Juice_(1992_film)",
+    yt:"Juice 1992 Tupac official trailer" },
+  { t:"New Jack City (1991)",
+    e:"💊", tags:[["Crime","t-crime"],["Action","t-action"]],
+    s:"A ruthless drug lord builds a crack cocaine empire in 1980s Harlem, and a maverick undercover cop will do anything to bring him down.",
+    wiki:"New_Jack_City",
+    yt:"New Jack City 1991 official trailer" },
+  { t:"Friday (1995)",
+    e:"😂", tags:[["Comedy","t-comedy"],["Drama","t-drama"]],
+    s:"A lazy Friday in South Central turns chaotic when Craig owes money to the neighborhood dealer and has until sundown to pay up.",
+    wiki:"Friday_(1995_film)",
+    yt:"Friday 1995 Ice Cube official trailer" },
+  { t:"Poetic Justice (1993)",
+    e:"✉️", tags:[["Drama","t-drama"],["Romance","t-drama"]],
+    s:"A grieving young poet (Janet Jackson) road-trips through California with a mailman she can barely stand — and slowly falls for him.",
+    wiki:"Poetic_Justice_(film)",
+    yt:"Poetic Justice 1993 official trailer" },
+  { t:"Set It Off (1996)",
+    e:"💰", tags:[["Action","t-action"],["Crime","t-crime"]],
+    s:"Four friends pushed to their absolute breaking point turn to bank robbery as their only way out, with devastating consequences.",
+    wiki:"Set_It_Off_(film)",
+    yt:"Set It Off 1996 official trailer" },
+  { t:"Paid in Full (2002)",
+    e:"💎", tags:[["Crime","t-crime"],["Drama","t-drama"]],
+    s:"Based on true events: three Harlem men get swept into the crack trade of the late '80s and quickly learn the brutal price of fast money.",
+    wiki:"Paid_in_Full_(film)",
+    yt:"Paid in Full 2002 official trailer" },
+  { t:"Baby Boy (2001)",
+    e:"👶", tags:[["Drama","t-drama"]],
+    s:"A 20-year-old man-child refuses to grow up, juggling two baby mamas in South Central while the streets and his past close in around him.",
+    wiki:"Baby_Boy_(film)",
+    yt:"Baby Boy 2001 John Singleton official trailer" },
+  { t:"ATL (2006)",
+    e:"🛼", tags:[["Drama","t-drama"],["Comedy","t-comedy"]],
+    s:"Four Atlanta teens spend their last free summer at the local roller rink before life, love, and hard choices force them to grow up.",
+    wiki:"ATL_(film)",
+    yt:"ATL 2006 official trailer" },
+  { t:"Teenage Mutant Ninja Turtles (1990)",
+    e:"🐢", tags:[["Action","t-action"],["Comedy","t-comedy"]],
+    s:"Four pizza-obsessed mutant turtles trained in ninjutsu defend New York City from the shadowy Foot Clan and their master, Shredder.",
+    wiki:"Teenage_Mutant_Ninja_Turtles_(1990_film)",
+    yt:"Teenage Mutant Ninja Turtles 1990 official trailer" },
+  { t:"Louis Theroux: Inside the Manosphere",
+    e:"📺", tags:[["Documentary","t-doc"]],
+    s:"Louis Theroux embeds himself with male influencers and their followers to understand the fast-growing online world of misogyny and masculinity.",
+    wiki:"Louis_Theroux:_Inside_the_Manosphere",
+    yt:"Louis Theroux Inside the Manosphere trailer" },
+  { t:"Memento",
+    e:"🧩", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"A man with no short-term memory uses tattoos and Polaroids to hunt his wife's killer — told entirely in reverse chronological order.",
+    wiki:"Memento_(film)",
+    yt:"Memento 2000 Christopher Nolan official trailer" },
+  { t:"What's Love Got to Do with It",
+    e:"🎵", tags:[["Biopic","t-biopic"],["Drama","t-drama"]],
+    s:"The unflinching true story of Tina Turner's rise to superstardom and her long, brutal marriage to Ike Turner.",
+    wiki:"What%27s_Love_Got_to_Do_with_It_(film)",
+    yt:"What's Love Got to Do with It 1993 Tina Turner trailer" },
+  { t:"Kiss the Girls",
+    e:"🕵️", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"A forensic psychologist races to track a serial kidnapper after his niece disappears — aided only by the one woman who managed to escape.",
+    wiki:"Kiss_the_Girls_(film)",
+    yt:"Kiss the Girls 1997 Morgan Freeman official trailer" },
+  { t:"High Crimes",
+    e:"⚖️", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"A successful lawyer discovers her husband has been secretly living under a fake identity accused of ordering a brutal wartime massacre.",
+    wiki:"High_Crimes_(film)",
+    yt:"High Crimes 2002 official trailer" },
+  { t:"Murder By Numbers",
+    e:"🔍", tags:[["Crime","t-crime"],["Thriller","t-thriller"]],
+    s:"Two privileged high school students engineer what they believe is the perfect murder — but a haunted detective refuses to let it slide.",
+    wiki:"Murder_by_Numbers_(film)",
+    yt:"Murder by Numbers 2002 Sandra Bullock official trailer" },
+  { t:"Taking Lives",
+    e:"🪪", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"An FBI profiler is called to Montreal to catch a serial killer with a chilling method: he doesn't just kill his victims — he becomes them.",
+    wiki:"Taking_Lives_(film)",
+    yt:"Taking Lives 2004 Angelina Jolie official trailer" },
+  { t:"Double Jeopardy",
+    e:"⚖️", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"Convicted of killing her husband, a woman discovers he faked his own death. Since she's already been tried, she can't be charged twice.",
+    wiki:"Double_Jeopardy_(1999_film)",
+    yt:"Double Jeopardy 1999 Ashley Judd official trailer" },
+  { t:"The Bone Collector",
+    e:"🦴", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"A quadriplegic forensic detective guides a rookie cop through crime scenes as a serial killer leaves elaborate clues only he can decode.",
+    wiki:"The_Bone_Collector_(film)",
+    yt:"The Bone Collector 1999 Denzel Washington official trailer" },
+  { t:"Copycat",
+    e:"🪞", tags:[["Crime","t-crime"],["Thriller","t-thriller"]],
+    s:"An agoraphobic criminal psychologist and a detective hunt a killer who meticulously mimics the methods of history's most infamous serial murderers.",
+    wiki:"Copycat_(film)",
+    yt:"Copycat 1995 Sigourney Weaver official trailer" },
+  { t:"Primal Fear",
+    e:"😨", tags:[["Crime","t-crime"],["Thriller","t-thriller"]],
+    s:"A flashy defense attorney takes the case of a meek altar boy accused of murdering an archbishop — and nothing is remotely what it seems.",
+    wiki:"Primal_Fear_(film)",
+    yt:"Primal Fear 1996 Richard Gere Edward Norton official trailer" },
+  { t:"Requiem for a Dream",
+    e:"💉", tags:[["Drama","t-drama"],["Thriller","t-thriller"]],
+    s:"Four people's lives spiral out of control as their addictions — to drugs, food, television, and fantasy — consume everything they have.",
+    wiki:"Requiem_for_a_Dream",
+    yt:"Requiem for a Dream 2000 official trailer" },
+  { t:"SLC Punk!",
+    e:"🤘", tags:[["Drama","t-drama"],["Comedy","t-comedy"]],
+    s:"A true-blue punk and his best friend navigate identity, rebellion, and the uncomfortable pull of the mainstream in 1980s Salt Lake City.",
+    wiki:"SLC_Punk!",
+    yt:"SLC Punk 1998 official trailer" },
+  { t:"The Usual Suspects",
+    e:"🚬", tags:[["Crime","t-crime"],["Thriller","t-thriller"]],
+    s:"Five criminals meet in a police lineup and hatch a heist — but who is the mysterious, all-powerful Keyser Söze pulling all the strings?",
+    wiki:"The_Usual_Suspects",
+    yt:"The Usual Suspects 1995 official trailer" },
+  { t:"Se7en",
+    e:"🔦", tags:[["Crime","t-crime"],["Thriller","t-thriller"]],
+    s:"Two detectives hunt a serial killer who uses the seven deadly sins as his blueprint — leading to one of cinema's most devastating endings.",
+    wiki:"Seven_(1995_film)",
+    yt:"Se7en 1995 Brad Pitt Morgan Freeman official trailer" },
 ];
 const N = FILMS.length;
 
 // ── STATE ─────────────────────────────────────────────────────────────────
-let watched = new Set();
+let watched      = new Set();
+let notes        = {};
+let customFilms  = [];
+let watchedCustom = new Set();
 
 function loadState() {
   const hash = location.hash.slice(1);
@@ -642,6 +1053,177 @@ function saveState() {
   history.replaceState(null, '', '#' + b.toString(36));
 }
 
+function loadNotes() {
+  const s = localStorage.getItem('wq_notes');
+  if (s) { try { notes = JSON.parse(s); } catch(_) {} }
+  // Pre-fill Memento if not already set
+  const mi = FILMS.findIndex(f => f.t === 'Memento');
+  if (mi >= 0 && !notes[mi]) notes[mi] = 'delulu is the solulu';
+}
+
+function saveNotes() {
+  localStorage.setItem('wq_notes', JSON.stringify(notes));
+}
+
+function loadCustom() {
+  const s = localStorage.getItem('wq_custom');
+  if (s) { try { customFilms = JSON.parse(s); } catch(_) {} }
+  const w = localStorage.getItem('wq_custom_watched');
+  if (w) { try { JSON.parse(w).forEach(i => watchedCustom.add(i)); } catch(_) {} }
+}
+
+function saveCustom() {
+  localStorage.setItem('wq_custom', JSON.stringify(customFilms));
+  localStorage.setItem('wq_custom_watched', JSON.stringify([...watchedCustom]));
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────────────
+let searchTimer = null;
+
+function handleAddKey(e) {
+  if (e.key === 'Escape') { hideDropdown(); e.target.blur(); }
+  if (e.key === 'Enter')  { hideDropdown(); addCustomFilm(); }
+}
+
+function handleSearchInput(val) {
+  clearTimeout(searchTimer);
+  if (!val.trim()) { hideDropdown(); return; }
+  showDropdownLoading();
+  searchTimer = setTimeout(() => doSearch(val.trim()), 320);
+}
+
+function showDropdownLoading() {
+  const d = document.getElementById('search-dropdown');
+  d.innerHTML = `<div class="search-status"><span class="search-dots"><span></span><span></span><span></span></span></div>`;
+  d.classList.add('open');
+}
+
+async function doSearch(query) {
+  try {
+    // Stage 1: get matching article titles via full-text search
+    const params = new URLSearchParams({
+      action: 'query', list: 'search',
+      srsearch: query + ' film', srlimit: '7',
+      format: 'json', origin: '*'
+    });
+    const res   = await fetch(`https://en.wikipedia.org/w/api.php?${params}`);
+    const data  = await res.json();
+    const titles = (data.query?.search || []).map(r => r.title);
+    if (!titles.length) { showSearchResults([], query); return; }
+
+    // Stage 2: fetch REST summaries in parallel — gives reliable poster + description
+    const summaries = await Promise.all(
+      titles.map(title =>
+        fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title.replace(/ /g,'_'))}`)
+          .then(r => r.json()).catch(() => null)
+      )
+    );
+    showSearchResults(summaries.filter(Boolean), query);
+  } catch(_) { hideDropdown(); }
+}
+
+function showSearchResults(pages, query) {
+  const d = document.getElementById('search-dropdown');
+  d.classList.add('open');
+  if (!pages.length) {
+    d.innerHTML = `<div class="search-status">No results for "${escHtml(query)}" — hit Add to add it anyway</div>`;
+    return;
+  }
+  d.innerHTML = '';
+  pages.forEach(page => {
+    const row    = document.createElement('div');
+    row.className = 'search-result';
+    const thumb  = page.thumbnail?.source?.replace(/\/\d+px-/, '/80px-') || '';
+    // REST summary gives `description` (Wikidata one-liner) and `extract` (first paragraph)
+    // description is concise ("2001 American thriller film"), extract has actual plot detail
+    const snippet = page.description
+      ? page.description.charAt(0).toUpperCase() + page.description.slice(1)
+      : (page.extract || '').replace(/<[^>]+>/g, '').slice(0, 120);
+    row.innerHTML = `
+      <div class="sr-thumb">${thumb ? `<img src="${escHtml(thumb)}" alt="">` : '🎬'}</div>
+      <div class="sr-info">
+        <div class="sr-title">${escHtml(page.title)}</div>
+        <div class="sr-snippet">${escHtml(snippet)}</div>
+      </div>
+      <button class="sr-add-btn" title="Add to queue">+</button>`;
+    const addFn = (e) => { e.stopPropagation(); addFromSearch(page); };
+    row.addEventListener('click', addFn);
+    row.querySelector('.sr-add-btn').addEventListener('click', addFn);
+    d.appendChild(row);
+  });
+}
+
+function addFromSearch(page) {
+  hideDropdown();
+  document.getElementById('add-input').value = '';
+  // Use extract (full first paragraph) for the card summary — much more descriptive than description
+  const raw = (page.extract || page.description || '').replace(/<[^>]+>/g, '');
+  const sentences = raw.match(/[^.!?]+[.!?]+/g) || [];
+  // Skip the dry opening "X is a Y film..." sentence if a plot sentence follows
+  let pick = sentences;
+  if (sentences.length > 1 && /\bis\s+a\b/i.test(sentences[0])) pick = sentences.slice(1);
+  let s = pick.slice(0, 2).join(' ').trim() || raw.slice(0, 220);
+  if (!s) s = raw.slice(0, 220);
+  if (s.length > 220) s = s.slice(0, 217) + '…';
+  const posterUrl = page.thumbnail?.source?.replace(/\/\d+px-/, '/200px-') || '';
+  const idx = customFilms.length;
+  customFilms.push({ t: page.title, e: '🎬', s, tags: [], yt: page.title + ' official trailer', note: '', posterUrl });
+  saveCustom();
+  renderCustomList();
+  updateProgress();
+  toast(`"${page.title}" added! 🎬`);
+  if (posterUrl) {
+    setTimeout(() => {
+      const card = document.querySelector(`#custom-list .movie-card[data-i="${idx}"]`);
+      if (card) {
+        const img = card.querySelector('.poster-img');
+        if (img) { img.onload = () => img.classList.add('loaded'); img.src = posterUrl; }
+      }
+    }, 50);
+  }
+}
+
+function hideDropdown() {
+  clearTimeout(searchTimer);
+  document.getElementById('search-dropdown').classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.add-section')) hideDropdown();
+});
+
+async function addCustomFilm() {
+  const input = document.getElementById('add-input');
+  const title = input.value.trim();
+  if (!title) { input.focus(); return; }
+  const idx = customFilms.length;
+  customFilms.push({ t: title, e: '🎬', s: '', tags: [], yt: title + ' official trailer', note: '', posterUrl: '' });
+  saveCustom();
+  input.value = '';
+  hideDropdown();
+  renderCustomList();
+  updateProgress();
+  toast('Adding to the queue… 🎬');
+  setTimeout(() => enrichCustomFilm(idx), 80);
+}
+
+function removeCustom(i) {
+  customFilms.splice(i, 1);
+  const newSet = new Set();
+  watchedCustom.forEach(idx => { if (idx < i) newSet.add(idx); else if (idx > i) newSet.add(idx - 1); });
+  watchedCustom = newSet;
+  saveCustom();
+  renderCustomList();
+  updateProgress();
+}
+
+function toggleCustom(i, el) {
+  if (watchedCustom.has(i)) { watchedCustom.delete(i); el.classList.remove('watched'); }
+  else { watchedCustom.add(i); el.classList.add('watched'); burst(el); }
+  updateProgress();
+  saveCustom();
+}
+
 // ── RENDER ────────────────────────────────────────────────────────────────
 function renderBulbs() {
   const el = document.getElementById('bulbs');
@@ -661,37 +1243,90 @@ function renderStrip() {
   }
 }
 
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function makeCard(f, i, isCustom) {
+  const li = document.createElement('li');
+  const isWatched = isCustom ? watchedCustom.has(i) : watched.has(i);
+  li.className = 'movie-card' + (isWatched ? ' watched' : '');
+  li.dataset.i = i;
+  if (isCustom) li.dataset.custom = '1';
+
+  const tags = (f.tags || []).map(([l,c]) => `<span class="tag ${c}">${l}</span>`).join('');
+  const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(f.yt || f.t + ' trailer')}`;
+  const noteVal = isCustom ? escHtml(f.note || '') : escHtml(notes[i] || '');
+  const numLabel = isCustom ? '✦' : String(i+1).padStart(2,'0');
+
+  li.innerHTML = `
+    <div class="cb"><span class="cb-check">✓</span></div>
+    <span class="num">${numLabel}</span>
+    <div class="poster-wrap"><img class="poster-img" alt="${escHtml(f.t)} poster"></div>
+    <div class="info">
+      <span class="title">${f.e || '🎬'} ${escHtml(f.t)}</span>
+      ${tags ? `<div class="meta">${tags}</div>` : ''}
+      ${f.s ? `<div class="summary">${escHtml(f.s)}</div>` : ''}
+      <a class="trailer-link" href="${ytUrl}" target="_blank" rel="noopener">▶ Trailer</a>
+      <div class="notes-divider"></div>
+      <textarea class="notes-input" rows="1" placeholder="📝 notes & thoughts...">${noteVal}</textarea>
+    </div>
+    ${isCustom ? `<button class="delete-btn" title="Remove">✕</button>` : ''}`;
+
+  // toggle watched on card click — but not on interactive children
+  li.addEventListener('click', e => {
+    if (e.target.closest('.notes-input, .trailer-link, .delete-btn, a')) return;
+    if (isCustom) toggleCustom(i, li);
+    else toggle(i, li);
+  });
+
+  // notes auto-resize + save
+  const ta = li.querySelector('.notes-input');
+  autoResize(ta);
+  ta.addEventListener('input', () => {
+    autoResize(ta);
+    if (isCustom) { customFilms[i].note = ta.value; saveCustom(); }
+    else { notes[i] = ta.value; saveNotes(); }
+  });
+
+  // delete button (custom only)
+  const del = li.querySelector('.delete-btn');
+  if (del) del.addEventListener('click', e => { e.stopPropagation(); removeCustom(i); });
+
+  return li;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
 function renderList() {
   const ul = document.getElementById('list');
   ul.innerHTML = '';
   FILMS.forEach((f, i) => {
-    const li = document.createElement('li');
-    li.className = 'movie-card' + (watched.has(i) ? ' watched' : '');
-    li.dataset.i = i;
-
-    const tags = f.tags.map(([l,c]) => `<span class="tag ${c}">${l}</span>`).join('');
-    li.innerHTML = `
-      <div class="cb"><span class="cb-check">✓</span></div>
-      <span class="num">${String(i+1).padStart(2,'0')}</span>
-      <div class="info">
-        <span class="title">${f.e} ${f.t}</span>
-        <div class="meta">${tags}</div>
-        <div class="summary">${f.s}</div>
-      </div>`;
-
-    li.addEventListener('click', () => toggle(i, li));
+    const li = makeCard(f, i, false);
     ul.appendChild(li);
-
-    // stagger entrance
     setTimeout(() => li.classList.add('visible'), i * 45);
   });
 }
 
+function renderCustomList() {
+  const ul = document.getElementById('custom-list');
+  ul.innerHTML = '';
+  customFilms.forEach((f, i) => {
+    const li = makeCard(f, i, true);
+    ul.appendChild(li);
+    setTimeout(() => li.classList.add('visible'), 30);
+  });
+}
+
 function updateProgress() {
-  const n = watched.size;
-  document.getElementById('prog-txt').textContent = `${n} / ${N}`;
-  document.getElementById('prog-fill').style.width = ((n/N)*100) + '%';
-  document.getElementById('banner').style.display = n === N ? 'block' : 'none';
+  const total = N + customFilms.length;
+  const n     = watched.size + watchedCustom.size;
+  document.getElementById('prog-txt').textContent = `${n} / ${total}`;
+  document.getElementById('prog-fill').style.width = total ? ((n/total)*100) + '%' : '0%';
+  document.getElementById('banner').style.display = (n > 0 && n === total) ? 'block' : 'none';
 }
 
 // ── INTERACTION ───────────────────────────────────────────────────────────
@@ -726,9 +1361,11 @@ function share() {
 function resetAll() {
   if (!confirm('Reset all watched items?')) return;
   watched.clear();
+  watchedCustom.clear();
   document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('watched'));
   updateProgress();
   saveState();
+  saveCustom();
 }
 
 function toast(msg) {
@@ -830,12 +1467,94 @@ function drawParticles() {
   }
 }
 
+// ── POSTERS ───────────────────────────────────────────────────────────────
+function fetchPosterInto(img, wikiTitle) {
+  fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${wikiTitle}`)
+    .then(r => r.json())
+    .then(d => {
+      const src = d.thumbnail?.source;
+      if (!src) return;
+      const sized = src.replace(/\/\d+px-/, '/200px-');
+      img.onload = () => img.classList.add('loaded');
+      img.onerror = () => {};
+      img.src = sized;
+    })
+    .catch(() => {});
+}
+
+function loadPosters() {
+  FILMS.forEach((film, i) => {
+    if (!film.wiki) return;
+    const card = document.querySelector(`#list .movie-card[data-i="${i}"]`);
+    if (!card) return;
+    const img = card.querySelector('.poster-img');
+    if (img) fetchPosterInto(img, film.wiki);
+  });
+}
+
+async function enrichCustomFilm(i) {
+  const film = customFilms[i];
+  if (!film) return;
+
+  // If added via search we already have posterUrl + summary — just apply the poster
+  if (film.posterUrl && film.s) {
+    const card = document.querySelector(`#custom-list .movie-card[data-i="${i}"]`);
+    if (card) {
+      const img = card.querySelector('.poster-img');
+      if (img && !img.classList.contains('loaded')) {
+        img.onload = () => img.classList.add('loaded');
+        img.onerror = () => {};
+        img.src = film.posterUrl;
+      }
+    }
+    return;
+  }
+
+  // Otherwise fetch from Wikipedia
+  const wikiTitle = encodeURIComponent(film.t.replace(/ /g, '_'));
+  try {
+    const res  = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${wikiTitle}`);
+    const data = await res.json();
+
+    // ── summary (only if not already set) ──
+    if (data.extract && !film.s) {
+      const sentences = data.extract.match(/[^.!?]+[.!?]+/g) || [];
+      let s = sentences.slice(0, 2).join(' ').trim();
+      if (!s) s = data.extract.slice(0, 220);
+      if (s.length > 220) s = s.slice(0, 217) + '…';
+      film.s = s;
+      saveCustom();
+      renderCustomList();
+      toast('Added to the queue! 🎬');
+    }
+
+    // ── poster — set AFTER any re-render so we target current DOM ──
+    const posterSrc = film.posterUrl || data.thumbnail?.source?.replace(/\/\d+px-/, '/200px-');
+    if (posterSrc) {
+      if (!film.posterUrl) { film.posterUrl = posterSrc; saveCustom(); }
+      const card = document.querySelector(`#custom-list .movie-card[data-i="${i}"]`);
+      if (card) {
+        const img = card.querySelector('.poster-img');
+        if (img) { img.onload = () => img.classList.add('loaded'); img.onerror = () => {}; img.src = posterSrc; }
+      }
+    }
+  } catch(_) {
+    toast('Added to the queue! 🎬');
+  }
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────
 loadState();
+loadNotes();
+loadCustom();
 renderBulbs();
 renderStrip();
 renderList();
+renderCustomList();
 updateProgress();
+loadPosters();
+// enrichCustomFilm handles both poster + summary for all custom films
+customFilms.forEach((_, i) => enrichCustomFilm(i));
 </script>
 </body>
 </html>
