@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Watch Queue 🎬</title>
+<style>
+:root {
+  --gold: #f5c518;
+  --gold-dim: rgba(245,197,24,0.15);
+  --red: #e63946;
+  --cream: #ede0cc;
+  --dark: #0a0a0d;
+  --card: #111116;
+  --card-hover: #18181f;
+  --muted: #4a4a5e;
+  --muted-light: #6e6e88;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--dark);
+  color: var(--cream);
+  font-family: 'Georgia', 'Times New Roman', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── FILM GRAIN ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23g)'/%3E%3C/svg%3E");
+  animation: grain 0.6s steps(2) infinite;
+}
+@keyframes grain {
+  0%   { transform: translate(0,0) }
+  25%  { transform: translate(3%,-5%) }
+  50%  { transform: translate(-4%,3%) }
+  75%  { transform: translate(5%,4%) }
+  100% { transform: translate(-2%,-3%) }
+}
+
+/* ── SCANLINES ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.07) 2px,
+    rgba(0,0,0,0.07) 4px
+  );
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* ── HEADER ── */
+header {
+  text-align: center;
+  padding: 52px 20px 36px;
+  position: relative;
+}
+
+.marquee-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 24px;
+}
+
+.marquee-bulb {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 5px var(--gold), 0 0 10px var(--gold);
+  margin: 0 5px;
+  animation: bulb 1.4s ease-in-out infinite;
+}
+.marquee-bulb:nth-child(3n+1) { animation-delay: 0s; }
+.marquee-bulb:nth-child(3n+2) { animation-delay: 0.47s; }
+.marquee-bulb:nth-child(3n)   { animation-delay: 0.93s; }
+
+@keyframes bulb {
+  0%,100% { opacity:1; box-shadow:0 0 5px var(--gold),0 0 10px var(--gold); }
+  50%     { opacity:0.2; box-shadow:none; }
+}
+
+.header-eyebrow {
+  font-family: 'Courier New', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.5em;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+h1 {
+  font-family: 'Impact', 'Arial Black', 'Haettenschweiler', sans-serif;
+  font-size: clamp(3rem, 10vw, 6.5rem);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 0.88;
+  color: var(--gold);
+  text-shadow:
+    2px 2px 0 #7a620a,
+    4px 4px 0 rgba(120,96,10,0.4),
+    0 0 60px rgba(245,197,24,0.12);
+  text-transform: uppercase;
+}
+
+.header-sub {
+  margin-top: 14px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+.popcorn-deco {
+  font-size: 1.8rem;
+  margin: 0 10px;
+  vertical-align: middle;
+  display: inline-block;
+  animation: wobble 3s ease-in-out infinite;
+}
+@keyframes wobble {
+  0%,100% { transform: rotate(-5deg); }
+  50%     { transform: rotate(5deg); }
+}
+
+/* ── PROGRESS ── */
+.progress-wrap {
+  max-width: 720px;
+  margin: 0 auto 36px;
+  padding: 0 24px;
+}
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.progress-label {
+  font-family: 'Courier New', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: var(--muted-light);
+  text-transform: uppercase;
+}
+
+.progress-count {
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  font-size: 1.4rem;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+
+.progress-track {
+  height: 5px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  overflow: visible;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #c0392b, var(--gold));
+  box-shadow: 0 0 12px rgba(245,197,24,0.5), 0 0 4px rgba(245,197,24,0.8);
+  width: 0%;
+  transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '▶';
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 8px;
+  color: var(--gold);
+  text-shadow: 0 0 8px var(--gold);
+}
+
+/* film strip holes under progress */
+.strip {
+  display: flex;
+  gap: 5px;
+  margin-top: 8px;
+  overflow: hidden;
+  height: 10px;
+}
+.strip-hole {
+  width: 12px;
+  height: 8px;
+  border-radius: 2px;
+  border: 1px solid rgba(245,197,24,0.15);
+  flex-shrink: 0;
+  background: rgba(245,197,24,0.03);
+}
+
+/* ── MOVIE LIST ── */
+.movie-list {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.movie-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,0.055);
+  border-radius: 5px;
+  padding: 13px 16px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.18s, border-color 0.18s, transform 0.15s;
+  user-select: none;
+  opacity: 0;
+  transform: translateX(-18px);
+}
+
+.movie-card.visible {
+  animation: cardIn 0.4s ease-out forwards;
+}
+
+@keyframes cardIn {
+  to { opacity:1; transform:translateX(0); }
+}
+
+/* left accent bar */
+.movie-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--red);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.22s ease;
+  border-radius: 3px 0 0 3px;
+}
+
+.movie-card:hover {
+  background: var(--card-hover);
+  border-color: rgba(245,197,24,0.22);
+  transform: translateX(2px);
+}
+.movie-card:hover::before { transform: scaleY(1); }
+
+.movie-card.watched {
+  background: rgba(255,255,255,0.018);
+  border-color: rgba(255,255,255,0.03);
+  transform: none !important;
+}
+.movie-card.watched::before {
+  background: var(--gold);
+  transform: scaleY(1);
+  opacity: 0.5;
+}
+
+/* ── CHECKBOX ── */
+.cb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--muted);
+  flex-shrink: 0;
+  margin-top: 2px;
+  position: relative;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.movie-card:hover .cb { border-color: var(--gold); }
+.cb-check {
+  font-size: 11px;
+  font-weight: bold;
+  font-family: sans-serif;
+  color: var(--dark);
+  opacity: 0;
+  transform: scale(0) rotate(-15deg);
+  transition: opacity 0.25s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  line-height: 1;
+}
+.movie-card.watched .cb {
+  background: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(245,197,24,0.15), 0 0 14px rgba(245,197,24,0.3);
+}
+.movie-card.watched .cb-check {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+/* ── MOVIE NUM ── */
+.num {
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  width: 20px;
+  text-align: right;
+  flex-shrink: 0;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+/* ── MOVIE INFO ── */
+.info { flex: 1; min-width: 0; }
+
+.title {
+  font-size: 0.975rem;
+  font-weight: bold;
+  color: var(--cream);
+  font-family: 'Georgia', serif;
+  position: relative;
+  display: inline;
+  transition: color 0.35s;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* strikethrough line */
+.title::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  height: 1.5px;
+  background: var(--muted-light);
+  width: 0;
+  transition: width 0.55s cubic-bezier(0.77,0,0.18,1);
+  pointer-events: none;
+}
+.movie-card.watched .title { color: var(--muted); }
+.movie-card.watched .title::after { width: 100%; }
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.tag {
+  font-family: 'Courier New', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.07em;
+  padding: 2px 6px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+.t-thriller { background:rgba(200,30,30,0.2);   color:#ff8888; border:1px solid rgba(200,30,30,0.25); }
+.t-horror   { background:rgba(110,20,140,0.2);  color:#d488ff; border:1px solid rgba(110,20,140,0.25); }
+.t-comedy   { background:rgba(20,130,70,0.2);   color:#6dffaa; border:1px solid rgba(20,130,70,0.25); }
+.t-drama    { background:rgba(160,100,10,0.2);  color:#ffcc55; border:1px solid rgba(160,100,10,0.25); }
+.t-action   { background:rgba(180,90,10,0.2);   color:#ffaa55; border:1px solid rgba(180,90,10,0.25); }
+.t-crime    { background:rgba(60,60,90,0.35);   color:#aaaadd; border:1px solid rgba(80,80,130,0.25); }
+.t-doc      { background:rgba(20,90,170,0.2);   color:#77bbff; border:1px solid rgba(20,90,170,0.25); }
+.t-biopic   { background:rgba(180,40,110,0.2);  color:#ff88cc; border:1px solid rgba(180,40,110,0.25); }
+
+/* ── SUMMARY ── */
+.summary {
+  font-size: 0.74rem;
+  color: var(--muted-light);
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  margin-top: 6px;
+  line-height: 1.5;
+  transition: color 0.35s, opacity 0.35s;
+}
+.movie-card.watched .summary { color: var(--muted); opacity: 0.5; }
+
+/* ── FOOTER ── */
+.footer {
+  max-width: 720px;
+  margin: 44px auto 90px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 11px 26px;
+  border-radius: 3px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.2s;
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+  z-index: 0;
+}
+.btn span { position: relative; z-index: 1; }
+.btn:hover::before { transform: scaleX(1); }
+
+.btn-share {
+  background: transparent;
+  border: 1px solid var(--red);
+  color: var(--red);
+}
+.btn-share::before { background: var(--red); }
+.btn-share:hover { color: #fff; }
+
+.btn-reset {
+  background: transparent;
+  border: 1px solid var(--muted);
+  color: var(--muted-light);
+}
+.btn-reset::before { background: var(--muted); }
+.btn-reset:hover { color: var(--cream); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--gold);
+  color: var(--dark);
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  font-weight: bold;
+  letter-spacing: 0.12em;
+  padding: 11px 26px;
+  border-radius: 3px;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 99999;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.on { transform: translateX(-50%) translateY(0); }
+
+/* ── CONFETTI CANVAS ── */
+#fx { position:fixed; inset:0; pointer-events:none; z-index:99997; }
+
+/* ── COMPLETE BANNER ── */
+.banner {
+  max-width: 720px;
+  margin: 0 auto 20px;
+  padding: 0 24px;
+  display: none;
+}
+.banner-inner {
+  background: linear-gradient(135deg, rgba(245,197,24,0.12), rgba(230,57,70,0.08));
+  border: 1px solid rgba(245,197,24,0.3);
+  border-radius: 5px;
+  padding: 14px 20px;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  text-transform: uppercase;
+  animation: pulse-banner 2s ease-in-out infinite;
+}
+@keyframes pulse-banner {
+  0%,100% { box-shadow: 0 0 0 0 rgba(245,197,24,0.15); }
+  50%      { box-shadow: 0 0 20px 4px rgba(245,197,24,0.1); }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  h1 { font-size: 3rem; }
+  .movie-card { padding: 11px 12px; gap: 10px; }
+  .num { display: none; }
+  .title { font-size: 0.88rem; }
+  .tag { font-size: 0.55rem; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="fx"></canvas>
+
+<!-- HEADER -->
+<header>
+  <div class="marquee-row" id="bulbs"></div>
+  <div class="header-eyebrow">★ &nbsp; Now Playing &nbsp; ★</div>
+  <h1>
+    <span class="popcorn-deco">🍿</span>
+    The Watch Queue
+    <span class="popcorn-deco" style="animation-delay:1.5s">🎬</span>
+  </h1>
+  <p class="header-sub">// check it off · share the link · watch together //</p>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-meta">
+    <span class="progress-label">Progress</span>
+    <span class="progress-count" id="prog-txt">0 / 19</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="prog-fill"></div>
+  </div>
+  <div class="strip" id="strip"></div>
+</div>
+
+<!-- COMPLETE BANNER -->
+<div class="banner" id="banner">
+  <div class="banner-inner">🏆 &nbsp; All watched! You're a certified cinema legend. &nbsp; 🏆</div>
+</div>
+
+<!-- MOVIE LIST -->
+<ul class="movie-list" id="list"></ul>
+
+<!-- FOOTER -->
+<div class="footer">
+  <button class="btn btn-share" onclick="share()"><span>📋 &nbsp;Copy Share Link</span></button>
+  <button class="btn btn-reset" onclick="resetAll()"><span>↺ &nbsp;Reset All</span></button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const FILMS = [
+  { t:"Along Came a Spider",                    e:"🕷️", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"Morgan Freeman's detective Alex Cross hunts a kidnapper who snatches a senator's daughter — then starts playing mind games." },
+  { t:"Good Luck Have Fun Don't Die",           e:"🎮", tags:[["Action","t-action"],["Comedy","t-comedy"]],
+    s:"A darkly comedic thriller set in the cutthroat world of competitive online gaming where the stakes turn very real." },
+  { t:"Are You There God? It's Me, Margaret.", e:"💛", tags:[["Drama","t-drama"],["Comedy","t-comedy"]],
+    s:"Eleven-year-old Margaret navigates puberty, religion, and fitting in after moving from New York City to the New Jersey suburbs." },
+  { t:"Rental Family",                          e:"🎭", tags:[["Documentary","t-doc"]],
+    s:"A Japanese documentary following a for-hire service that provides actors to play family members, friends, and partners for lonely clients." },
+  { t:"Ready or Not",                           e:"😈", tags:[["Horror","t-horror"],["Thriller","t-thriller"]],
+    s:"A bride's wedding night turns deadly when her new in-laws reveal a murderous family tradition she must survive until dawn." },
+  { t:"Scream (2022)",                          e:"🔪", tags:[["Horror","t-horror"],["Slasher","t-horror"]],
+    s:"Twenty-five years after the original Woodsboro killings, a new Ghostface returns — forcing Sidney, Gale, and Dewey back into the nightmare." },
+  { t:"Scream VI (2023)",                       e:"🔪", tags:[["Horror","t-horror"],["Slasher","t-horror"]],
+    s:"The survivors escape to New York City, but Ghostface follows — and in a city of millions, there's nowhere to hide." },
+  { t:"Scream VII (2025)",                      e:"🔪", tags:[["Horror","t-horror"],["Slasher","t-horror"]],
+    s:"Sidney Prescott makes her long-awaited return as a new wave of murders threatens to unravel the truth behind the Ghostface legacy." },
+  { t:"Boyz n the Hood (1991)",                 e:"🏙️", tags:[["Drama","t-drama"],["Crime","t-crime"]],
+    s:"Three friends grow up in South Central Los Angeles navigating gang violence and broken dreams, as one tries desperately to find a way out." },
+  { t:"Menace II Society (1993)",               e:"🌆", tags:[["Drama","t-drama"],["Crime","t-crime"]],
+    s:"A young man in the Watts projects tries to escape the cycle of street violence, but the streets refuse to let him go." },
+  { t:"Juice (1992)",                           e:"⚡", tags:[["Drama","t-drama"],["Crime","t-crime"]],
+    s:"Four Harlem teenagers chase respect and power, but when one gets his hands on a gun, everything spirals out of control." },
+  { t:"New Jack City (1991)",                   e:"💊", tags:[["Crime","t-crime"],["Action","t-action"]],
+    s:"A ruthless drug lord builds a crack cocaine empire in 1980s Harlem, and a maverick undercover cop will do anything to bring him down." },
+  { t:"Friday (1995)",                          e:"😂", tags:[["Comedy","t-comedy"],["Drama","t-drama"]],
+    s:"A lazy Friday in South Central turns chaotic when Craig owes money to the neighborhood dealer and has until sundown to pay up." },
+  { t:"Poetic Justice (1993)",                  e:"✉️", tags:[["Drama","t-drama"],["Biopic","t-biopic"]],
+    s:"A grieving young poet (Janet Jackson) road-trips through California with a mailman she can barely stand — and slowly falls for him." },
+  { t:"Set It Off (1996)",                      e:"💰", tags:[["Action","t-action"],["Crime","t-crime"]],
+    s:"Four friends pushed to their absolute breaking point turn to bank robbery as their only way out, with devastating consequences." },
+  { t:"Paid in Full (2002)",                    e:"💎", tags:[["Crime","t-crime"],["Drama","t-drama"]],
+    s:"Based on true events: three Harlem men get swept into the crack trade of the late '80s and quickly learn the brutal price of fast money." },
+  { t:"Baby Boy (2001)",                        e:"👶", tags:[["Drama","t-drama"]],
+    s:"A 20-year-old man-child refuses to grow up, juggling two baby mamas in South Central while the streets and his past close in around him." },
+  { t:"ATL (2006)",                             e:"🛼", tags:[["Drama","t-drama"],["Comedy","t-comedy"]],
+    s:"Four Atlanta teens spend their last free summer at the local roller rink before life, love, and hard choices force them to grow up." },
+  { t:"Teenage Mutant Ninja Turtles (1990s)",   e:"🐢", tags:[["Action","t-action"],["Comedy","t-comedy"]],
+    s:"Four pizza-obsessed mutant turtles trained in ninjutsu defend New York City from the shadowy Foot Clan and their master, Shredder." },
+  { t:"Louis Theroux: Inside the Manosphere",   e:"📺", tags:[["Documentary","t-doc"]],
+    s:"Louis Theroux embeds himself with male influencers and their followers to understand the fast-growing online world of misogyny and masculinity." },
+  { t:"Memento",                                e:"🧩", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"A man with no short-term memory uses tattoos and Polaroids to hunt his wife's killer — told entirely in reverse chronological order." },
+  { t:"What's Love Got to Do with It",          e:"🎵", tags:[["Biopic","t-biopic"],["Drama","t-drama"]],
+    s:"The unflinching true story of Tina Turner's rise to superstardom and her years of abuse at the hands of Ike Turner." },
+  { t:"Kiss the Girls",                         e:"🕵️", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"A forensic psychologist races to track a serial kidnapper after his niece disappears — aided only by the one woman who managed to escape." },
+  { t:"High Crimes",                            e:"⚖️", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"A successful lawyer discovers her husband has been secretly living under a fake identity accused of ordering a brutal wartime massacre." },
+  { t:"Murder By Numbers",                      e:"🔍", tags:[["Crime","t-crime"],["Thriller","t-thriller"]],
+    s:"Two privileged high school students engineer what they believe is the perfect murder — but a haunted detective refuses to let it slide." },
+  { t:"Taking Lives",                           e:"🪪", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"An FBI profiler is called to Montreal to help catch a serial killer with a chilling method: he doesn't just kill his victims — he becomes them." },
+  { t:"Double Jeopardy",                        e:"⚖️", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"Convicted of killing her husband, a woman discovers he faked his own death. Since she's already been tried, she can't be charged twice." },
+  { t:"The Bone Collector",                     e:"🦴", tags:[["Thriller","t-thriller"],["Crime","t-crime"]],
+    s:"A quadriplegic forensic detective guides a rookie cop through crime scenes as a serial killer leaves elaborate clues only he can decode." },
+  { t:"Copycat",                                e:"🪞", tags:[["Crime","t-crime"],["Thriller","t-thriller"]],
+    s:"An agoraphobic criminal psychologist and a detective hunt a killer who meticulously mimics the signature methods of history's most infamous serial murderers." },
+  { t:"Primal Fear",                            e:"😨", tags:[["Crime","t-crime"],["Thriller","t-thriller"]],
+    s:"A flashy defense attorney takes the case of a meek altar boy accused of murdering an archbishop — and nothing is remotely what it seems." },
+];
+const N = FILMS.length;
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let watched = new Set();
+
+function loadState() {
+  const hash = location.hash.slice(1);
+  if (hash) {
+    try {
+      const n = parseInt(hash, 36);
+      for (let i = 0; i < N; i++) if (n & (1 << i)) watched.add(i);
+      return;
+    } catch(_) {}
+  }
+  const s = localStorage.getItem('wq2024');
+  if (s) { try { JSON.parse(s).forEach(i => watched.add(i)); } catch(_) {} }
+}
+
+function saveState() {
+  localStorage.setItem('wq2024', JSON.stringify([...watched]));
+  let b = 0;
+  watched.forEach(i => { b |= (1 << i); });
+  history.replaceState(null, '', '#' + b.toString(36));
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function renderBulbs() {
+  const el = document.getElementById('bulbs');
+  for (let i = 0; i < 22; i++) {
+    const d = document.createElement('div');
+    d.className = 'marquee-bulb';
+    el.appendChild(d);
+  }
+}
+
+function renderStrip() {
+  const el = document.getElementById('strip');
+  for (let i = 0; i < 70; i++) {
+    const d = document.createElement('div');
+    d.className = 'strip-hole';
+    el.appendChild(d);
+  }
+}
+
+function renderList() {
+  const ul = document.getElementById('list');
+  ul.innerHTML = '';
+  FILMS.forEach((f, i) => {
+    const li = document.createElement('li');
+    li.className = 'movie-card' + (watched.has(i) ? ' watched' : '');
+    li.dataset.i = i;
+
+    const tags = f.tags.map(([l,c]) => `<span class="tag ${c}">${l}</span>`).join('');
+    li.innerHTML = `
+      <div class="cb"><span class="cb-check">✓</span></div>
+      <span class="num">${String(i+1).padStart(2,'0')}</span>
+      <div class="info">
+        <span class="title">${f.e} ${f.t}</span>
+        <div class="meta">${tags}</div>
+        <div class="summary">${f.s}</div>
+      </div>`;
+
+    li.addEventListener('click', () => toggle(i, li));
+    ul.appendChild(li);
+
+    // stagger entrance
+    setTimeout(() => li.classList.add('visible'), i * 45);
+  });
+}
+
+function updateProgress() {
+  const n = watched.size;
+  document.getElementById('prog-txt').textContent = `${n} / ${N}`;
+  document.getElementById('prog-fill').style.width = ((n/N)*100) + '%';
+  document.getElementById('banner').style.display = n === N ? 'block' : 'none';
+}
+
+// ── INTERACTION ───────────────────────────────────────────────────────────
+function toggle(i, el) {
+  if (watched.has(i)) {
+    watched.delete(i);
+    el.classList.remove('watched');
+  } else {
+    watched.add(i);
+    el.classList.add('watched');
+    burst(el);
+  }
+  updateProgress();
+  saveState();
+}
+
+function share() {
+  const url = location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => toast('Link copied! Send it to friends 🎬'));
+  } else {
+    const t = document.createElement('textarea');
+    t.value = url;
+    document.body.appendChild(t);
+    t.select();
+    document.execCommand('copy');
+    document.body.removeChild(t);
+    toast('Link copied! Send it to friends 🎬');
+  }
+}
+
+function resetAll() {
+  if (!confirm('Reset all watched items?')) return;
+  watched.clear();
+  document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('watched'));
+  updateProgress();
+  saveState();
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('on'), 2600);
+}
+
+// ── CONFETTI ──────────────────────────────────────────────────────────────
+const canvas = document.getElementById('fx');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let animId;
+
+function resizeCanvas() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+const COLORS = ['#f5c518','#e63946','#ede0cc','#ff88bb','#6dffaa','#77bbff','#ffaa55','#d488ff'];
+
+function burst(el) {
+  const r = el.getBoundingClientRect();
+  const cx = r.left + r.width / 2;
+  const cy = r.top  + r.height / 2;
+
+  for (let i = 0; i < 56; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const spd   = 2.5 + Math.random() * 6.5;
+    const shape = Math.random();
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * spd,
+      vy: Math.sin(angle) * spd - 3.5,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      w: 5 + Math.random() * 6,
+      h: 3 + Math.random() * 4,
+      rot: Math.random() * 360,
+      rotV: (Math.random() - 0.5) * 10,
+      alpha: 1,
+      shape: shape < 0.45 ? 'rect' : shape < 0.75 ? 'circle' : 'star'
+    });
+  }
+
+  cancelAnimationFrame(animId);
+  drawParticles();
+}
+
+function drawStar(ctx, cx, cy, r) {
+  ctx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    const a = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+    const b = (i * 4 * Math.PI) / 5 - Math.PI / 2 + Math.PI / 5;
+    if (i === 0) ctx.moveTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+    else ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+    ctx.lineTo(cx + (r*0.45) * Math.cos(b), cy + (r*0.45) * Math.sin(b));
+  }
+  ctx.closePath();
+}
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles = particles.filter(p => p.alpha > 0.01);
+  particles.forEach(p => {
+    p.x   += p.vx;
+    p.y   += p.vy;
+    p.vy  += 0.28;  // gravity
+    p.vx  *= 0.99;  // air
+    p.alpha -= 0.018;
+    p.rot += p.rotV;
+
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, p.alpha);
+    ctx.fillStyle = p.color;
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot * Math.PI / 180);
+
+    if (p.shape === 'rect') {
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+    } else if (p.shape === 'circle') {
+      ctx.beginPath();
+      ctx.arc(0, 0, p.w/2, 0, Math.PI*2);
+      ctx.fill();
+    } else {
+      drawStar(ctx, 0, 0, p.w/2);
+      ctx.fill();
+    }
+    ctx.restore();
+  });
+
+  if (particles.length > 0) {
+    animId = requestAnimationFrame(drawParticles);
+  } else {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+loadState();
+renderBulbs();
+renderStrip();
+renderList();
+updateProgress();
+</script>
+</body>
+</html>
